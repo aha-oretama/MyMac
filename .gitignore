@@ -18,3 +18,7 @@ build/
 nbbuild/
 dist/
 nbdist/
+
+### Apps,log
+*.log
+*.app

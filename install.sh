@@ -1,11 +1,15 @@
 #!/bin/bash
 
-## homebrew [https://brew.sh/]
-### Notification: required for OS X Lion 10.7 and below.
-#if [[ ! "$(which brew && brew help)" ]]; then
-#  echo 'install homebrew'
-#  /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-#fi
+err() {
+  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@" >&2
+}
+
+# homebrew [https://brew.sh/]
+## Notification: required for OS X Lion 10.7 and below.
+if [[ ! "$(which brew && brew help)" ]]; then
+  echo 'install homebrew'
+  /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+fi
 
 # brew install
 function brew_install() {
@@ -50,6 +54,36 @@ function apple_install() {
   done
 }
 apple_install
+
+# dmg install
+function dmg_install() {
+  curl -fsSL https://raw.githubusercontent.com/aha-oretama/MyMac/master/dmg.csv | while read line
+  do
+    title="$(echo ${line} | cut -d ',' -f 1)"
+    url="$(echo ${line} | cut -d ',' -f 2)"
+    app="${title}.app"
+    log="${title}.log"
+
+    if [[ ! "$(ls /Applications/ | grep ${title})" ]]; then
+      echo "install ${title}"
+      wget "${url}" -O "${app}" -o "${log}"
+      if [[ $? = 0 ]]; then
+        hdiutil mount "${app}"
+        volume="$(df | grep Typora | awk -F' ' '{print $9}')"
+        cp -R "${volume}/${app}" /Applications/
+
+        # tear down
+        hdiutil detach "${volume}"
+      else
+        err "Cannot download ${url}. See ${log}."
+      fi
+
+      # tear down
+      rm -f "${app}"
+    fi
+  done
+}
+dmg_install
 
 # nodebrew [https://github.com/hokaccha/nodebrew]
 if [[ ! "$(which nodebrew && nodebrew help)" ]]; then
