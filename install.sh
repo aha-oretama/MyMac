@@ -36,11 +36,20 @@ if [[ ! "$(mas account)" ]]; then
 fi
 
 
-# The Unarchiver [https://itunes.apple.com/jp/app/the-unarchiver/id425424353]
-if [[ ! "$(mas list | grep 425424353)" ]]; then
-  echo 'install The Unarchiver'
-  mas install 425424353
-fi
+# Apple install
+function apple_install() {
+  curl -fsSL https://raw.githubusercontent.com/aha-oretama/MyMac/master/apple.csv | while read line
+  do
+    title="$(echo ${line} | cut -d ',' -f 1)"
+    id="$(echo ${line} | cut -d ',' -f 2)"
+
+    if [[ ! "$(mas list | grep ${id})" ]]; then
+      echo "install ${title}"
+      mas install "${id}"
+    fi
+  done
+}
+apple_install
 
 # nodebrew [https://github.com/hokaccha/nodebrew]
 if [[ ! "$(which nodebrew && nodebrew help)" ]]; then
