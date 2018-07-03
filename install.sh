@@ -37,3 +37,24 @@ if [[ ! "$(mas list | grep 425424353)" ]]; then
   mas install 425424353
 fi
 
+# nodebrew [https://github.com/hokaccha/nodebrew]
+if [[ ! "$(which nodebrew && nodebrew help)" ]]; then
+  echo 'install nodebrew'
+  curl -L git.io/nodebrew | perl - setup
+  echo '# nodebrew' >> ~/.bashrc
+  echo 'export PATH=$HOME/.nodebrew/current/bin:$PATH' >> ~/.bashrc
+fi
+
+# node [https://nodejs.org/ja/]
+if [[ ! "$(which node && node --version) ]]; then
+  local node_version="$(nodebrew ls-all | grep -E "^v" | tail -n 1)"
+  echo "install node, version is ${node_version}"
+  nodebrew install "${node_version}"
+fi
+
+# commitizen [https://github.com/commitizen/cz-cli]
+if [[ ! "$(which cz)" ]]; then
+  echo 'install commitizen'
+  npm install -g commitizen cz-conventional-changelog
+  echo '{ "path": "cz-conventional-changelog" }' > ~/.czrc
+fi
