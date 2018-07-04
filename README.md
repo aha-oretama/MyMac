@@ -5,5 +5,5 @@ Set up my mac.
 ## How to set up my mac
 
 ```
-curl -fsSL 'https://raw.githubusercontent.com/aha-oretama/MyMac/master/install.sh' | bash
+curl -H 'Cache-Control: no-cache' -fsSL 'https://raw.githubusercontent.com/aha-oretama/MyMac/master/install.sh' | bash
 ```
