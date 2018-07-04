@@ -1,95 +1,121 @@
 #!/bin/bash
 
-err() {
-  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@" >&2
-}
-
-infoInstall() {
+infoInstalling() {
   echo "Installing $@ ..."
 }
 
+infoInstalled() {
+  echo "$(tput setaf 2)Already installed $@ ✔︎$(tput sgr0)"
+}
+
 # homebrew [https://brew.sh/]
-## Notification: required for OS X Lion 10.7 and below.
-if [[ ! "$(which brew && brew help)" ]]; then
-  infoInstall 'homebrew'
-  /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-fi
+function homebrew_install() {
+  ## Notification: required for OS X Lion 10.7 and below.
+  if [[ ! "$(which brew && brew help)" ]]; then
+    infoInstalling 'homebrew'
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  else
+    infoInstalled 'homebrew'
+  fi
+}
 
 # brew install
 function brew_install() {
   curl -H 'Cache-Control: no-cache' -fsSL 'https://raw.githubusercontent.com/aha-oretama/MyMac/master/brew_list.csv' | while read item
   do
     if [[ ! "$(brew list | grep ${item})" ]]; then
-      infoInstall "${item}"
+      infoInstalling "${item}"
       brew install "${item}"
+    else
+      infoInstalled "${item}"
     fi
   done
 }
-brew_install
 
 # brew cask install
 function brew_cask_install() {
   curl -H 'Cache-Control: no-cache' -fsSL 'https://raw.githubusercontent.com/aha-oretama/MyMac/master/brew_cask_list.csv' | while read item
   do
     if [[ ! "$(brew cask list | grep ${item})" ]]; then
-      infoInstall "${item}"
-      brew install "${item}"
+      infoInstalling "${item}"
+      brew cask install "${item}"
+    else
+      infoInstalled "${item}"
     fi
   done
 }
-brew_cask_install
-
-# mas-cli [https://github.com/mas-cli/mas]
-## change cli from gui after fix https://github.com/mas-cli/mas/issues/107
-# echo "input your Apple ID"
-# read itunes_user
-# echo "${itunes_user}"
-# mas signin "${itunes_user}"
-if [[ ! "$(mas account)" ]]; then
-  echo -e "\nPlease log in to the app store..."
-  open -a "/Applications/App Store.app"
-
-  until (mas account > /dev/null);
-  do
-    sleep 3
-  done
-fi
-
 
 # Apple install
 ## Notification: App's title may include space.
 function apple_install() {
+  # mas-cli [https://github.com/mas-cli/mas]
+  ## change cli from gui after fix https://github.com/mas-cli/mas/issues/107
+  # echo "input your Apple ID"
+  # read itunes_user
+  # echo "${itunes_user}"
+  # mas signin "${itunes_user}"
+  if [[ ! "$(mas account)" ]]; then
+    echo -e "\nPlease log in to the app store..."
+    open -a "/Applications/App Store.app"
+
+    until (mas account > /dev/null);
+    do
+      sleep 3
+    done
+  fi
+
   curl -H 'Cache-Control: no-cache' -fsSL https://raw.githubusercontent.com/aha-oretama/MyMac/master/apple.csv | while read line
   do
-    title="$(echo ${line} | cut -d ',' -f 1) | tr -d [:space:]"
+    title="$(echo ${line} | cut -d ',' -f 1 | tr -d [:space:])"
     id="$(echo ${line} | cut -d ',' -f 2)"
 
     if [[ ! "$(mas list | tr -d [:space:] | grep ${id})" ]]; then
-      infoInstall "${title}"
+      infoInstalling "${title}"
       mas install "${id}"
+    else
+      infoInstalled "${title}"
     fi
   done
 }
-apple_install
 
 # nodebrew [https://github.com/hokaccha/nodebrew]
-if [[ ! "$(which nodebrew && nodebrew help)" ]]; then
-  infoInstall 'nodebrew'
-  curl -L git.io/nodebrew | perl - setup
-  echo '# nodebrew' >> ~/.bashrc
-  echo 'export PATH=$HOME/.nodebrew/current/bin:$PATH' >> ~/.bashrc
-fi
+function nodebrew_install() {
+  if [[ ! "$(which nodebrew && nodebrew help)" ]]; then
+    infoInstalling 'nodebrew'
+    curl -L git.io/nodebrew | perl - setup
+    echo '# nodebrew' >> ~/.bashrc
+    echo 'export PATH=$HOME/.nodebrew/current/bin:$PATH' >> ~/.bashrc
+  else
+    infoInstalled 'nodebrew'
+  fi
+}
 
 # node [https://nodejs.org/ja/]
-if [[ ! "$(which node && node --version)" ]]; then
-  node_version="$(nodebrew ls-all | grep -E "^v" | tail -n 1)"
-  infoInstall "node, version is ${node_version}"
-  nodebrew install "${node_version}"
-fi
+function node_install() {
+  if [[ ! "$(which node && node --version)" ]]; then
+    node_version="$(nodebrew ls-all | grep -E "^v" | tail -n 1)"
+    infoInstalling "node, version is ${node_version}"
+    nodebrew install "${node_version}"
+  else
+    infoInstalled "node, version is $(node --version)"
+  fi
+}
 
 # commitizen [https://github.com/commitizen/cz-cli]
-if [[ ! "$(npm ls -g --depth=0 | grep commitizen)" ]]; then
-  infoInstall 'commitizen'
-  npm install -g commitizen cz-conventional-changelog
-  echo '{ "path": "cz-conventional-changelog" }' > ~/.czrc
-fi
+function npm_global_install() {
+  if [[ ! "$(npm ls -g --depth=0 | grep commitizen)" ]]; then
+    infoInstalling 'commitizen'
+    npm install -g commitizen cz-conventional-changelog
+    echo '{ "path": "cz-conventional-changelog" }' > ~/.czrc
+  else
+    infoInstalled "commitizen"
+  fi
+}
+
+homebrew_install
+brew_install
+brew_cask_install
+apple_install
+nodebrew_install
+node_install
+npm_global_install
