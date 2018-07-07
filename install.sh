@@ -78,18 +78,6 @@ function apple_install() {
   done
 }
 
-# nodebrew [https://github.com/hokaccha/nodebrew]
-function nodebrew_install() {
-  if [[ ! "$(which nodebrew && nodebrew help)" ]]; then
-    infoInstalling 'nodebrew'
-    curl -L git.io/nodebrew | perl - setup
-    echo '# nodebrew' >> ~/.bashrc
-    echo 'export PATH=$HOME/.nodebrew/current/bin:$PATH' >> ~/.bashrc
-  else
-    infoInstalled 'nodebrew'
-  fi
-}
-
 # node [https://nodejs.org/ja/]
 function node_install() {
   if [[ ! "$(which node && node --version)" ]]; then
