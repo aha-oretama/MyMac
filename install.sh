@@ -36,7 +36,8 @@ function brew_install() {
 function brew_cask_install() {
   curl -H 'Cache-Control: no-cache' -fsSL 'https://raw.githubusercontent.com/aha-oretama/MyMac/master/brew_cask_list.csv' | while read item
   do
-    if [[ ! "$(brew cask list | grep ${item})" ]]; then
+    tmp="$(echo ${item} | tr '-' ' ')"
+    if [[ ! "$(brew cask list | grep ${item})" && ! `ls /Applications/ | grep -i "${tmp}"` ]]; then
       infoInstalling "${item}"
       brew cask install "${item}"
     else
@@ -64,12 +65,12 @@ function apple_install() {
     done
   fi
 
-  curl -H 'Cache-Control: no-cache' -fsSL https://raw.githubusercontent.com/aha-oretama/MyMac/master/apple.csv | while read line
+  curl -H 'Cache-Control: no-cache' -fsSL 'https://raw.githubusercontent.com/aha-oretama/MyMac/master/apple.csv' | while read line
   do
     title="$(echo ${line} | cut -d ',' -f 1 | tr -d [:space:])"
     id="$(echo ${line} | cut -d ',' -f 2)"
 
-    if [[ ! "$(mas list | tr -d [:space:] | grep ${id})" ]]; then
+    if [[ ! "$(mas list | grep ${id})" ]]; then
       infoInstalling "${title}"
       mas install "${id}"
     else
@@ -104,6 +105,5 @@ homebrew_install
 brew_install
 brew_cask_install
 apple_install
-nodebrew_install
 node_install
 npm_global_install
