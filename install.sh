@@ -95,7 +95,6 @@ function npm_global_install() {
   if [[ ! "$(npm ls -g --depth=0 | grep commitizen)" ]]; then
     infoInstalling 'commitizen'
     npm install -g commitizen cz-conventional-changelog
-    echo '{ "path": "cz-conventional-changelog" }' > ~/.czrc
   else
     infoInstalled "commitizen"
   fi
