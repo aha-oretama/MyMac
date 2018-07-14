@@ -10,3 +10,4 @@ rbenv
 sshpass
 pipenv
 nodebrew
+circleci
