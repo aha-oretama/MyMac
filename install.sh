@@ -70,7 +70,7 @@ function apple_install() {
     title="$(echo ${line} | cut -d ',' -f 1 | tr -d [:space:])"
     id="$(echo ${line} | cut -d ',' -f 2)"
 
-    if [[ ! "$(mas list | grep ${id})" ]]; then
+    if [[ ! "$(mas list | grep ${id})" && ! (`ls /Applications/ | grep -i "${title}"`) ]]; then
       infoInstalling "${title}"
       mas install "${id}"
     else
