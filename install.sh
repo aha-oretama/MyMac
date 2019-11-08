@@ -1,7 +1,7 @@
 #!/bin/bash
 
 infoInstalling() {
-  echo "$(tput setaf 2)Installing $@ ..."
+  echo "$(tput setaf 2)Installing $@ ...$(tput sgr0)"
 }
 
 infoInstalled() {
