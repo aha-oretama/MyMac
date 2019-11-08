@@ -1,10 +1,14 @@
 #!/bin/bash
 
 infoInstalling() {
-  echo "Installing $@ ..."
+  echo "$(tput setaf 2)Installing $@ ..."
 }
 
 infoInstalled() {
+  echo "$(tput setaf 2)Finished installing $@ ✔︎$(tput sgr0)"
+}
+
+infoAlreadyInstalled() {
   echo "$(tput setaf 2)Already installed $@ ✔︎$(tput sgr0)"
 }
 
@@ -14,8 +18,9 @@ function homebrew_install() {
   if [[ ! "$(which brew && brew help)" ]]; then
     infoInstalling 'homebrew'
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-  else
     infoInstalled 'homebrew'
+  else
+    infoAlreadyInstalled 'homebrew'
   fi
 }
 
@@ -26,8 +31,9 @@ function brew_install() {
     if [[ ! "$(brew list | grep ${item})" ]]; then
       infoInstalling "${item}"
       brew install "${item}"
-    else
       infoInstalled "${item}"
+    else
+      infoAlreadyInstalled "${item}"
     fi
   done
 }
@@ -40,8 +46,9 @@ function brew_cask_install() {
     if [[ ! "$(brew cask list | grep ${item})" && ! `ls /Applications/ | grep -i "${tmp}"` ]]; then
       infoInstalling "${item}"
       brew cask install "${item}"
-    else
       infoInstalled "${item}"
+    else
+      infoAlreadyInstalled "${item}"
     fi
   done
 }
@@ -73,8 +80,9 @@ function apple_install() {
     if [[ ! "$(mas list | grep ${id})" && ! (`ls /Applications/ | grep -i "${title}"`) ]]; then
       infoInstalling "${title}"
       mas install "${id}"
-    else
       infoInstalled "${title}"
+    else
+      infoAlreadyInstalled "${title}"
     fi
   done
 }
@@ -86,7 +94,7 @@ function node_install() {
     infoInstalling "node, version is ${node_version}"
     nodebrew install "${node_version}"
   else
-    infoInstalled "node, version is $(node --version)"
+    infoAlreadyInstalled "node, version is $(node --version)"
   fi
 }
 
@@ -96,7 +104,7 @@ function npm_global_install() {
     infoInstalling 'commitizen'
     npm install -g commitizen cz-conventional-changelog
   else
-    infoInstalled "commitizen"
+    infoAlreadyInstalled "commitizen"
   fi
 }
 
