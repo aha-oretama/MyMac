@@ -91,30 +91,7 @@ function apple_install() {
   done
 }
 
-# node [https://nodejs.org/ja/]
-function node_install() {
-  if [[ ! "$(which node && node --version)" ]]; then
-    node_version="$(nodebrew ls-all | grep -E "^v" | tail -n 1)"
-    infoInstalling "node, version is ${node_version}"
-    nodebrew install "${node_version}"
-  else
-    infoAlreadyInstalled "node, version is $(node --version)"
-  fi
-}
-
-# commitizen [https://github.com/commitizen/cz-cli]
-function npm_global_install() {
-  if [[ ! "$(npm ls -g --depth=0 | grep commitizen)" ]]; then
-    infoInstalling 'commitizen'
-    npm install -g commitizen cz-conventional-changelog
-  else
-    infoAlreadyInstalled "commitizen"
-  fi
-}
-
 homebrew_install
 brew_install
 brew_cask_install
 apple_install
-node_install
-npm_global_install
