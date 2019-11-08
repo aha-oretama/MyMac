@@ -70,7 +70,7 @@ function apple_install() {
 
     mas account > /dev/null 2>&1
     result=$?
-    until ($result -e 0);
+    until [[ $result -e 0 ]];
     do
       sleep 3
     done
