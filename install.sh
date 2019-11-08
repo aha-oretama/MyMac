@@ -95,8 +95,7 @@ function anyenv_install() {
   yes | anyenv install --init
   curl -H 'Cache-Control: no-cache' -fsSL 'https://raw.githubusercontent.com/aha-oretama/MyMac/master/anyenv.csv' | while read item
   do
-    tmp="$(echo ${item} | tr '-' ' ')"
-    if [[ ! "$(anyenv versions | grep ${item})" ]]; then
+    if [[ ! "$(anyenv version | grep ${item})" ]]; then
       infoInstalling "${item}"
       anyenv install "${item}"
       infoInstalled "${item}"
@@ -106,8 +105,19 @@ function anyenv_install() {
   done
 }
 
+function update_bash() {
+  if [[ ! "$(brew list | grep bash)" ]]; then
+    brew install bash
+    sudo bash -c 'echo /usr/local/bin/bash >> /etc/shells'
+    chsh -s /usr/local/bin/bash
+  else
+    infoAlreadyInstalled "bash"
+  fi
+}
+
 homebrew_install
 brew_install
 brew_cask_install
 apple_install
 anyenv_install
+update_bash
