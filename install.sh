@@ -62,11 +62,15 @@ function apple_install() {
   # read itunes_user
   # echo "${itunes_user}"
   # mas signin "${itunes_user}"
-  if [[ ! "$(mas account)" ]]; then
-    echo -e "\nPlease log in to the app store..."
+  mas account > /dev/null 2>&1
+  result=$?
+  if [[ $result -ne 0 ]]; then
+    echo -e "$(tput setaf 3)\nPlease log in to the app store...$(tput sgr0)"
     open -a "/Applications/App Store.app"
 
-    until (mas account > /dev/null);
+    mas account > /dev/null 2>&1
+    result=$?
+    until ($result -e 0);
     do
       sleep 3
     done
