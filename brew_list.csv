@@ -4,7 +4,7 @@ openssl
 wget
 tree
 telnet
-sshpass
+https://raw.githubusercontent.com/kadwanev/bigboybrew/master/Library/Formula/sshpass.rb
 circleci
 tig
 peco
