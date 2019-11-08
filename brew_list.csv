@@ -4,11 +4,9 @@ openssl
 wget
 tree
 telnet
-jenv
-yarn
-rbenv
 sshpass
-pipenv
-nodebrew
 circleci
 tig
+peco
+jq
+kubectx
