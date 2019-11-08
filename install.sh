@@ -68,11 +68,11 @@ function apple_install() {
     echo -e "$(tput setaf 3)\nPlease log in to the app store...$(tput sgr0)"
     open -a "/Applications/App Store.app"
 
-    mas account > /dev/null 2>&1
-    result=$?
-    until [[ $result -e 0 ]];
+    until [[ $result -eq 0 ]];
     do
       sleep 3
+      mas account > /dev/null 2>&1
+      result=$?
     done
   fi
 
