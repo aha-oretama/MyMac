@@ -1,5 +1,7 @@
 #!/bin/bash
 
+## Disable security for downloaded application
+sudo spctl --master-disable
 defaults write com.apple.touchbar.agent PresentationModeGlobal functionKeys
 ## Enable Full key board access
 defaults write com.apple.AppleMultitouchTrackpad Clicking -bool false
