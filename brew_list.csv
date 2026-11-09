@@ -1,12 +1,12 @@
-git
-mas
 wget
 tree
 peco
 jq
 kubectl
 kubectx
-kustomize
 stern
 anyenv
-hub
+gh
+ghq
+gnupg
+pinentry-mac
