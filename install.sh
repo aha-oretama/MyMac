@@ -53,30 +53,6 @@ function brew_cask_install() {
   done
 }
 
-# Apple install
-## Notification: App's title may include space.
-function apple_install() {
-  # mas-cli [https://github.com/mas-cli/mas]
-  ## Need to signin via GUI: https://github.com/mas-cli/mas#%EF%B8%8F-known-issues
-  echo "Sign in your Apple ID via App Store."
-  mas open
-  read -p "Hit enter: "
-
-  curl -H 'Cache-Control: no-cache' -fsSL 'https://raw.githubusercontent.com/aha-oretama/MyMac/master/apple.csv' | while read line
-  do
-    title="$(echo ${line} | cut -d ',' -f 1 | tr -s ' ')"
-    id="$(echo ${line} | cut -d ',' -f 2)"
-
-    if [[ ! "$(mas list | grep ${id})" && ! (`ls /Applications/ | grep -i "${title}"`) ]]; then
-      infoInstalling "${title}"
-      mas install "${id}"
-      infoInstalled "${title}"
-    else
-      infoAlreadyInstalled "${title}"
-    fi
-  done
-}
-
 function anyenv_install() {
   yes | anyenv install --init
   curl -H 'Cache-Control: no-cache' -fsSL 'https://raw.githubusercontent.com/aha-oretama/MyMac/master/anyenv.csv' | while read item
@@ -94,5 +70,4 @@ function anyenv_install() {
 homebrew_install
 brew_install
 brew_cask_install
-apple_install
 anyenv_install

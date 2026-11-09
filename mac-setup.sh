@@ -1,23 +1,17 @@
 #!/bin/bash
 
-## Disable security for downloaded application
-sudo spctl --master-disable
-defaults write com.apple.touchbar.agent PresentationModeGlobal functionKeys
 ## Enable Full key board access
 defaults write com.apple.AppleMultitouchTrackpad Clicking -bool false
 defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
 defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 ## Enable detail save panel when saving a download file
-defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -boolean true
+defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
 defaults write NSGlobalDomain AppleShowScrollBars -string "Always"
 
 # Trackpad
 defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false
 
-defaults write com.apple.menuextra.battery ShowPercent -string "YES"
-defaults write com.apple.menuextra.clock DateFormat -string "M\u6708d\u65e5(EEE)  H:mm:ss"
-
-## Open spotlight by ctl + space
+## Open spotlight by option + space
 defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 64 "
 <dict>
   <key>enabled</key>
@@ -66,7 +60,6 @@ defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
 defaults write com.apple.finder ShowStatusBar -bool true
 defaults write com.apple.finder ShowPathbar -bool true
 chflags nohidden ~/Library
-sudo chflags nohidden /Volumes
 killall Finder
 
 # Screen Capture
